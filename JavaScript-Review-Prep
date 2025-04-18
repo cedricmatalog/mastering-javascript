@@ -1,0 +1,730 @@
+## JavaScript Fundamentals Review for Prep Exam (Code Samples Enhanced)
+
+**Welcome!** This guide reviews key JavaScript concepts for your prep exam.
+
+**How to Use This Reviewer:**
+
+*   Read through each section actively.
+*   Study the **commented code samples** to see concepts in action.
+*   Pay attention to `💡 Exam Tips` and `⚠️ Common Pitfalls`.
+*   Answer the `🧠 Quick Check` questions to test your recall.
+*   Try the `🚀 Try This` suggestions to solidify understanding with code.
+*   Focus on the *why* behind concepts, not just memorizing syntax.
+
+---
+
+### 1. JavaScript's Role & Environment
+
+*   **Purpose:** JavaScript adds **interactivity** and **dynamic behavior** to websites.
+*   **Execution:** Runs in a **Runtime Environment** via a **JavaScript Engine**. Browsers provide **Web APIs** (DOM, Fetch, etc.).
+
+---
+
+### 2. Core Concepts: Data Types & Variables
+
+#### 2.1 Data Types (The Building Blocks)
+
+*   **Primitive Types (Immutable):**
+    *   `Number`: `42`, `3.14`, `NaN`
+    *   `String`: `'hello'`, `"world"`, `` `template literal` ``
+    *   `Boolean`: `true`, `false`
+    *   `undefined`: Default value of uninitialized variables.
+    *   `null`: Intentionally assigned "no value".
+    *   `Symbol`: `Symbol('unique')`
+    *   `BigInt`: `12345678901234567890n`
+*   **Non-Primitive Type (Mutable):**
+    *   `Object`: `{ key: 'value' }`
+*   **Dynamic Typing:**
+    ```javascript
+    let message = "Initial message"; // message is a String
+    console.log(typeof message); // Output: "string"
+    message = 100; // Now message is a Number
+    console.log(typeof message); // Output: "number"
+    ```
+*   **`typeof` Operator:**
+    ```javascript
+    console.log(typeof 42);          // Output: "number"
+    console.log(typeof "hello");     // Output: "string"
+    console.log(typeof true);        // Output: "boolean"
+    console.log(typeof undefined);   // Output: "undefined"
+    console.log(typeof null);        // Output: "object" (⚠️ Known quirk)
+    console.log(typeof { a: 1 });    // Output: "object"
+    console.log(typeof Symbol('id'));// Output: "symbol"
+    console.log(typeof (x => x*2));  // Output: "function" (Functions are objects)
+    ```
+
+    🧠 **Quick Check:** What are the 7 primitive data types? What does `typeof null` return?
+
+#### 2.2 Variables (Storing Data)
+
+*   **Declaration:**
+    *   `let`: Block-scoped, **can** be reassigned.
+        ```javascript
+        let count = 0; // Declare and initialize
+        count = 1;     // Reassign is OK
+        console.log(count); // Output: 1
+        ```
+    *   `const`: Block-scoped, **cannot** be reassigned. Must be initialized.
+        ```javascript
+        const PI = 3.14;
+        // PI = 3.14159; // Error: Assignment to constant variable.
+
+        const user = { name: "Alice" };
+        user.name = "Bob"; // Modifying the object's *content* is OK
+        console.log(user); // Output: { name: 'Bob' }
+        // user = { name: "Charlie" }; // Error: Cannot reassign the const variable itself
+        ```
+    *   `var`: Function-scoped. **Avoid.**
+*   **Naming:** `camelCase`, descriptive.
+
+    🧠 **Quick Check:** Can you change the properties of an object declared with `const`? Can you reassign the variable itself?
+
+#### 2.3 Scope (Where Variables Live)
+
+*   **Global Scope:** Accessible everywhere.
+*   **Function Scope:** (`var`) Accessible only within the function.
+*   **Block Scope:** (`let`, `const`) Accessible only within the `{}` block.
+    ```javascript
+    if (true) {
+      let blockVar = "I'm block scoped";
+      var functionVar = "I'm function scoped (avoid)";
+      console.log(blockVar); // Output: "I'm block scoped"
+    }
+    // console.log(blockVar); // Error: blockVar is not defined (outside its scope)
+    console.log(functionVar); // Output: "I'm function scoped (avoid)" (var leaks out)
+    ```
+
+#### 2.4 Hoisting
+
+Declarations moved up, initializations stay put.
+
+*   `var`: Hoisted and initialized with `undefined`.
+    ```javascript
+    console.log(myVar); // Output: undefined (declaration hoisted, initialized undefined)
+    var myVar = 5;
+    console.log(myVar); // Output: 5
+    ```
+*   `let`/`const`: Hoisted, but *not* initialized (Temporal Dead Zone - TDZ).
+    ```javascript
+    // console.log(myLet); // Error: Cannot access 'myLet' before initialization (TDZ)
+    let myLet = 10;
+    console.log(myLet); // Output: 10
+    ```
+*   `function` declarations: Hoisted entirely.
+    ```javascript
+    sayHello(); // Output: "Hello!" (Function called before definition)
+    function sayHello() {
+      console.log("Hello!");
+    }
+    ```
+
+---
+
+### 3. Operators (Performing Actions)
+
+*   **Arithmetic:** `+`, `-`, `*`, `/`, `%` (remainder), `**` (exponent).
+*   **Assignment:** `=`, `+=`, `-=`, etc.
+*   **Comparison:**
+    *   `===`, `!==` (Strict - Value & Type). **✨ Always prefer!**
+        ```javascript
+        console.log(5 === '5'); // Output: false (different types)
+        console.log(null === undefined); // Output: false
+        ```
+    *   `==`, `!=` (Loose - Value after Coercion). ⚠️ **Avoid.**
+        ```javascript
+        console.log(5 == '5'); // Output: true (string '5' coerced to number 5)
+        console.log(null == undefined); // Output: true (special case)
+        console.log(0 == false); // Output: true (false coerced to 0)
+        ```
+    *   `>`, `<`, `>=`, `<=`.
+*   **Logical:** `&&` (AND), `||` (OR), `!` (NOT).
+    ```javascript
+    let isMember = true;
+    let age = 25;
+    if (isMember && age >= 18) { // Both must be true
+      console.log("Access granted");
+    }
+    ```
+*   **Ternary:** `condition ? valIfTrue : valIfFalse`.
+    ```javascript
+    let type = age >= 18 ? "Adult" : "Minor";
+    console.log(type); // Output: Adult (if age is 25)
+    ```
+*   **Nullish Coalescing (`??`):** Default if `null` or `undefined`.
+    ```javascript
+    let userSetting = null;
+    let defaultSetting = "Light Theme";
+    let currentTheme = userSetting ?? defaultSetting;
+    console.log(currentTheme); // Output: "Light Theme"
+
+    let userVolume = 0; // 0 is a valid value, not null/undefined
+    let defaultVolume = 50;
+    let currentVolume = userVolume ?? defaultVolume;
+    console.log(currentVolume); // Output: 0
+    ```
+*   **Optional Chaining (`?.`):** Safe navigation.
+    ```javascript
+    const user = {
+      // profile: { name: "Alice" }
+    };
+    // Without ?. this would throw a TypeError if profile doesn't exist
+    const userName = user?.profile?.name;
+    console.log(userName); // Output: undefined (no error)
+    ```
+
+    🧠 **Quick Check:** What is the output of `0 == false`? What about `0 === false`?
+
+---
+
+### 4. Strings (Working with Text)
+
+*   **Template Literals:** `` `Hello, ${name}!` ``
+    ```javascript
+    const item = "Book";
+    const price = 19.99;
+    const message = `The ${item} costs $${price}.
+    Available now!`; // Multi-line and interpolation
+    console.log(message);
+    ```
+*   **Common Methods:**
+    *   `length`: ` "abc".length // 3 `
+    *   `toUpperCase()`: ` "hi".toUpperCase() // "HI" `
+    *   `includes()`: ` "hello".includes("ell") // true `
+    *   `slice(start, end)`: ` "abcdef".slice(1, 4) // "bcd" (end index exclusive) `
+    *   `replace(search, replacement)`: ` "cat dog".replace("cat", "fish") // "fish dog" (first match) `
+    *   `split(separator)`: ` "red,green,blue".split(",") // ["red", "green", "blue"] `
+
+    🚀 **Try This:** Use `split` to turn "apple orange banana" into an array of fruits. Then use `join` to turn it back into a string separated by " | ".
+
+---
+
+### 5. Control Flow (Making Decisions & Repeating Actions)
+
+#### 5.1 Conditional Statements
+
+*   `if`/`else if`/`else`:
+    ```javascript
+    let grade = 85;
+    if (grade >= 90) {
+      console.log("A");
+    } else if (grade >= 80) {
+      console.log("B"); // This block runs
+    } else {
+      console.log("C or lower");
+    }
+    ```
+*   `switch`:
+    ```javascript
+    let color = "blue";
+    switch (color) {
+      case "red":
+        console.log("Stop");
+        break; // Exit switch
+      case "yellow":
+        console.log("Caution");
+        break;
+      case "green":
+      case "blue": // Fall-through: green or blue
+        console.log("Go");
+        break;
+      default:
+        console.log("Unknown color");
+    } // Output: Go
+    ```
+*   **Truthy/Falsy:** Remember the 6 falsy values (`false`, `0`, `""`, `null`, `undefined`, `NaN`).
+
+#### 5.2 Loops
+
+*   `for`:
+    ```javascript
+    // Print numbers 0 to 4
+    for (let i = 0; i < 5; i++) {
+      console.log(`Iteration number ${i}`);
+    }
+    ```
+*   `while`:
+    ```javascript
+    let ticketsLeft = 3;
+    while (ticketsLeft > 0) {
+      console.log(`Selling ticket... ${ticketsLeft} left.`);
+      ticketsLeft--; // Decrement counter
+    } // Output: Logs 3 times
+    ```
+*   `for...of` (for iterables like Arrays, Strings):
+    ```javascript
+    const fruits = ["apple", "banana", "cherry"];
+    for (const fruit of fruits) {
+      console.log(`I like ${fruit}s`);
+    }
+    ```
+*   `for...in` (for object keys):
+    ```javascript
+    const car = { make: "Toyota", year: 2020 };
+    for (const key in car) {
+      // key will be "make", then "year"
+      // car[key] accesses the value using the key
+      console.log(`${key}: ${car[key]}`);
+    }
+    ```
+*   `break` & `continue`:
+    ```javascript
+    for (let i = 0; i < 10; i++) {
+      if (i === 3) {
+        continue; // Skip iteration 3
+      }
+      if (i === 7) {
+        break; // Exit loop when i is 7
+      }
+      console.log(i); // Output: 0, 1, 2, 4, 5, 6
+    }
+    ```
+
+    🧠 **Quick Check:** Which loop is best for iterating over the elements of an array? Which iterates over the keys of an object?
+
+---
+
+### 6. Functions (Reusable Code Blocks)
+
+*   **Definition:**
+    *   Declaration: `function greet(name) { return `Hello, ${name}`; }` (Hoisted)
+    *   Expression: `const greet = function(name) { return `Hello, ${name}`; };`
+    *   Arrow: `const greet = (name) => `Hello, ${name}`;` (Concise, lexical `this`)
+        ```javascript
+        // Arrow function example with implicit return
+        const square = x => x * x;
+        console.log(square(5)); // Output: 25
+
+        // Arrow function with multiple statements needs {} and explicit return
+        const add = (a, b) => {
+          console.log(`Adding ${a} and ${b}`);
+          return a + b;
+        };
+        console.log(add(3, 4)); // Output: Adding 3 and 4 \n 7
+        ```
+*   **Closures:** A function retains access to its lexical scope (outer variables).
+    ```javascript
+    function createCounter() {
+      let count = 0; // Outer scope variable
+      // The returned function is a closure
+      return function() {
+        count++; // Accesses and modifies 'count' from outer scope
+        console.log(count);
+      };
+    }
+    const counter1 = createCounter();
+    counter1(); // Output: 1
+    counter1(); // Output: 2 (count is remembered)
+    const counter2 = createCounter(); // Creates a new scope and count
+    counter2(); // Output: 1
+    ```
+*   **`this` Keyword:** Value depends on invocation context (arrow functions inherit `this`).
+
+    🧠 **Quick Check:** What is a closure? How does `this` behave differently in arrow functions compared to regular function declarations/expressions?
+
+---
+
+### 7. Arrays (Ordered Collections)
+
+*   **Creation & Access:** `const arr = [10, 20]; console.log(arr[0]); // 10`
+*   **Common Methods:**
+    *   Mutating: `push()`, `pop()`, `splice()`, `sort((a, b) => a - b)`.
+        ```javascript
+        const colors = ["red", "green"];
+        colors.push("blue"); // Add to end
+        console.log(colors); // Output: ["red", "green", "blue"]
+        colors.pop(); // Remove from end
+        console.log(colors); // Output: ["red", "green"]
+        colors.splice(1, 0, "yellow"); // Insert "yellow" at index 1
+        console.log(colors); // Output: ["red", "yellow", "green"]
+        ```
+    *   Non-Mutating / Iteration:
+        ```javascript
+        const numbers = [1, 2, 3, 4];
+
+        // map: Create new array by transforming each element
+        const doubled = numbers.map(num => num * 2);
+        console.log(doubled); // Output: [2, 4, 6, 8]
+        console.log(numbers); // Output: [1, 2, 3, 4] (original unchanged)
+
+        // filter: Create new array with elements passing the test
+        const evens = numbers.filter(num => num % 2 === 0);
+        console.log(evens); // Output: [2, 4]
+
+        // reduce: Combine elements into a single value
+        const sum = numbers.reduce((accumulator, current) => accumulator + current, 0);
+        // 0 is the initial value of the accumulator
+        console.log(sum); // Output: 10
+
+        // forEach: Execute a function for each element (no return value)
+        numbers.forEach(num => console.log(`Processing ${num}`));
+        ```
+*   **Spread (`...`) & Destructuring:**
+    ```javascript
+    const arr1 = [1, 2];
+    const arr2 = [3, 4];
+    const combined = [...arr1, ...arr2]; // Spread: [1, 2, 3, 4]
+    const [first, second] = combined; // Destructure: first=1, second=2
+    console.log(first, second); // Output: 1 2
+    ```
+
+    🧠 **Quick Check:** Does `map` change the original array? What does `reduce` typically do?
+
+---
+
+### 8. Objects (Key-Value Collections)
+
+*   **Creation & Access:**
+    ```javascript
+    const person = {
+      name: "Alice",
+      age: 30,
+      "job title": "Engineer" // Key with space needs quotes
+    };
+    console.log(person.name); // Dot notation: "Alice"
+    console.log(person["age"]); // Bracket notation: 30
+    console.log(person["job title"]); // Bracket notation required for keys with spaces/special chars
+    let prop = "name";
+    console.log(person[prop]); // Bracket notation with variable key: "Alice"
+    ```
+*   **Methods & `this`:**
+    ```javascript
+    const calculator = {
+      value: 0,
+      add(num) {
+        this.value += num; // 'this' refers to the calculator object
+        return this.value;
+      }
+    };
+    calculator.add(5);
+    console.log(calculator.value); // Output: 5
+    ```
+*   **Utilities:**
+    ```javascript
+    const user = { id: 1, active: true };
+    console.log(Object.keys(user));   // Output: ["id", "active"]
+    console.log(Object.values(user)); // Output: [1, true]
+    console.log(Object.entries(user));// Output: [ ["id", 1], ["active", true] ]
+    ```
+*   **Spread (`...`) & Destructuring:**
+    ```javascript
+    const defaults = { theme: 'light' };
+    const settings = { ...defaults, fontSize: 16 }; // Spread: { theme: 'light', fontSize: 16 }
+    const { theme, fontSize } = settings; // Destructure: theme='light', fontSize=16
+    console.log(theme, fontSize); // Output: light 16
+    ```
+
+---
+
+### 9. Working with the DOM
+
+*   **Selecting:**
+    ```javascript
+    // Assuming HTML: <div id="main"><p class="content">Hello</p></div>
+    const mainDiv = document.getElementById('main');
+    const paragraph = document.querySelector('#main .content'); // First match using CSS selector
+    console.log(paragraph.textContent); // Output: Hello
+    ```
+*   **Manipulating:**
+    ```javascript
+    // Create a new list item
+    const newItem = document.createElement('li');
+    newItem.textContent = "New Item"; // Set text content (safer)
+
+    // Get the list (assuming HTML: <ul id="myList"></ul>)
+    const list = document.getElementById('myList');
+    list.appendChild(newItem); // Add the new item to the list
+
+    // Change style
+    paragraph.style.color = 'blue';
+    paragraph.style.fontSize = '18px'; // Use camelCase for CSS properties
+
+    // Add a CSS class (assuming CSS defines .highlight)
+    paragraph.classList.add('highlight');
+    ```
+*   **Events:**
+    ```javascript
+    // Assuming HTML: <button id="myButton">Click Me</button>
+    const button = document.getElementById('myButton');
+
+    button.addEventListener('click', function(event) {
+      console.log('Button was clicked!');
+      // event.target refers to the button element
+      event.target.textContent = 'Clicked!';
+      // event.preventDefault(); // Use this to stop default actions like form submission
+    });
+    ```
+
+    🧠 **Quick Check:** How do you create a new HTML element (like a `<span>`) in JavaScript? How do you add it to the page inside an existing `<div>`?
+
+---
+
+### 10. Asynchronous JavaScript
+
+*   **Promises (`.then`/`.catch`):**
+    ```javascript
+    fetch('https://api.example.com/data') // fetch returns a Promise
+      .then(response => {
+        // Check if the HTTP request was successful
+        if (!response.ok) {
+          // If not, create and throw an error to be caught by .catch()
+          throw new Error(`HTTP Error: ${response.status}`);
+        }
+        // response.json() also returns a Promise that resolves with the parsed JSON data
+        return response.json();
+      })
+      .then(data => {
+        // This runs if the previous .then succeeded (response was ok and json parsed)
+        console.log('Data received:', data);
+      })
+      .catch(error => {
+        // This runs if any error occurred in the fetch() or any .then() block
+        console.error('Failed to fetch data:', error);
+      })
+      .finally(() => {
+          // This runs regardless of success or failure, for cleanup etc.
+          console.log('Fetch attempt finished.');
+      });
+    ```
+*   **`async`/`await` (with `try/catch`):**
+    ```javascript
+    async function fetchData() {
+      console.log("Attempting to fetch data...");
+      try {
+        // await pauses execution until the Promise from fetch() settles
+        const response = await fetch('https://api.example.com/data');
+
+        // Check response status
+        if (!response.ok) {
+          throw new Error(`HTTP Error: ${response.status}`);
+        }
+
+        // await pauses execution until the Promise from response.json() resolves
+        const data = await response.json();
+        console.log('Data received:', data);
+        return data; // The promise returned by fetchData resolves with this value
+
+      } catch (error) {
+        // Catches errors from fetch(), response.ok check, or response.json()
+        console.error('Failed to fetch data:', error);
+        // Optionally re-throw or handle the error
+        // throw error; // Propagate error if needed
+        return null; // Or return a default value on error
+
+      } finally {
+          console.log('Fetch attempt finished.');
+      }
+    }
+
+    // Call the async function and handle its resolved value or potential rejection
+    fetchData()
+        .then(result => {
+            if (result) { console.log("Async function succeeded:", result); }
+            else { console.log("Async function handled an error."); }
+        });
+    console.log("fetchData() called, but might not be finished yet."); // This logs before the async data arrives
+    ```
+
+    🧠 **Quick Check:** In `async/await`, what does the `await` keyword do? How do you handle errors when using `await`?
+
+---
+
+### 11. Modules (Organizing Code - ES6+)
+
+```javascript
+// --- utils.js ---
+export const VERSION = "1.0";
+export function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// --- main.js ---
+// Import specific named exports
+import { VERSION, capitalize } from './utils.js';
+// Must use <script type="module" src="main.js"></script> in HTML
+
+console.log(`Running version ${VERSION}`); // Output: Running version 1.0
+console.log(capitalize("hello")); // Output: Hello
+```
+
+---
+
+### 12. Error Handling
+
+*   **`try...catch...finally`:**
+    ```javascript
+    function checkAge(age) {
+      if (typeof age !== 'number') {
+        throw new TypeError("Age must be a number.");
+      }
+      if (age < 0) {
+        throw new RangeError("Age cannot be negative.");
+      }
+      console.log("Age is valid.");
+    }
+
+    try {
+      console.log("Checking age...");
+      checkAge(-5); // This will throw a RangeError
+      console.log("This won't be logged");
+    } catch (error) { // Catches the thrown error
+      console.error(`Error: ${error.name} - ${error.message}`);
+      // Output: Error: RangeError - Age cannot be negative.
+    } finally {
+      // This block always executes
+      console.log("Age check finished.");
+    }
+    ```
+
+---
+
+### 13. Classes (Blueprints for Objects - ES6+)
+
+*   **Definition & Instantiation:**
+    ```javascript
+    class Player {
+      // Static property (belongs to the class, not instances)
+      static teamSize = 5;
+
+      // Constructor to initialize instance properties
+      constructor(name, score = 0) {
+        this.name = name; // 'this' refers to the new instance
+        this.score = score;
+      }
+
+      // Instance method
+      increaseScore(points) {
+        this.score += points;
+        console.log(`${this.name} now has ${this.score} points.`);
+      }
+
+      // Static method (called on the class: Player.describe())
+      static describe() {
+          console.log(`A standard team has ${Player.teamSize} players.`);
+      }
+    }
+
+    // Create instances using 'new'
+    const player1 = new Player("Alice");
+    const player2 = new Player("Bob", 10);
+
+    player1.increaseScore(5); // Output: Alice now has 5 points.
+    Player.describe();       // Output: A standard team has 5 players.
+    ```
+*   **Inheritance (`extends`, `super`):**
+    ```javascript
+    class Mage extends Player { // Mage inherits from Player
+      constructor(name, score = 0, mana = 100) {
+        // Call the parent constructor *first*
+        super(name, score); // Passes name and score to Player constructor
+        this.mana = mana; // Add Mage-specific property
+      }
+
+      // Add Mage-specific method
+      castSpell() {
+        if (this.mana >= 10) {
+          this.mana -= 10;
+          console.log(`${this.name} casts a spell! (${this.mana} mana left)`);
+          this.increaseScore(1); // Can call inherited methods
+        } else {
+          console.log(`${this.name} is out of mana!`);
+        }
+      }
+    }
+
+    const mage1 = new Mage("Gandalf");
+    mage1.castSpell(); // Output: Gandalf casts a spell! (90 mana left)
+    mage1.increaseScore(5); // Output: Gandalf now has 6 points. (increaseScore was called by castSpell too)
+    ```
+
+    🧠 **Quick Check:** What is the role of `super()` in a child class constructor?
+
+---
+
+### 14. Other Important Concepts
+
+*   **JSON:**
+    ```javascript
+    const data = { name: "Config", version: 2, enabled: true };
+    // Convert JS object to JSON string
+    const jsonString = JSON.stringify(data, null, 2); // null, 2 adds indentation
+    console.log(jsonString);
+    /* Output:
+    {
+      "name": "Config",
+      "version": 2,
+      "enabled": true
+    }
+    */
+
+    // Parse JSON string back to JS object
+    const parsedData = JSON.parse(jsonString);
+    console.log(parsedData.version); // Output: 2
+    ```
+*   **Web Storage (`localStorage`, `sessionStorage`):**
+    ```javascript
+    // Store data (must be string)
+    localStorage.setItem('username', 'Alice');
+    sessionStorage.setItem('sessionID', 'xyz789');
+
+    // Store object (convert to JSON string first)
+    const settings = { theme: 'dark', notifications: false };
+    localStorage.setItem('userSettings', JSON.stringify(settings));
+
+    // Retrieve data
+    const username = localStorage.getItem('username');
+    console.log(username); // Output: Alice
+
+    // Retrieve and parse object
+    const storedSettings = JSON.parse(localStorage.getItem('userSettings'));
+    console.log(storedSettings.theme); // Output: dark
+
+    // Remove item
+    // localStorage.removeItem('username');
+    // Clear all for that origin
+    // localStorage.clear();
+    ```
+*   **Sets (Unique Values):**
+    ```javascript
+    const ids = new Set();
+    ids.add(1);
+    ids.add(2);
+    ids.add(1); // Adding duplicate has no effect
+    console.log(ids); // Output: Set { 1, 2 }
+    console.log(ids.has(1)); // Output: true
+    console.log(ids.size); // Output: 2
+    ```
+*   **Maps (Any Key Type):**
+    ```javascript
+    const userRoles = new Map();
+    let user1 = { id: 1 };
+    let user2 = { id: 2 };
+
+    userRoles.set(user1, 'Admin'); // Use object as key
+    userRoles.set(user2, 'Editor');
+    userRoles.set('guest', 'Viewer'); // Use string as key
+
+    console.log(userRoles.get(user1)); // Output: Admin
+    console.log(userRoles.has('guest')); // Output: true
+    console.log(userRoles.size); // Output: 3
+    ```
+
+---
+
+### 15. Final Exam Tips & Best Practices
+
+*   ✅ **Use `let`/`const`**, avoid `var`.
+*   ✅ **Use `===`/`!==`**, avoid `==`/`!=`.
+*   ✅ Use explicit **semicolons** `;`.
+*   ✅ Write **clear, descriptive names** (`camelCase`).
+*   ✅ Understand **`this`** behavior (especially arrow functions vs. regular).
+*   ✅ Master **asynchronous patterns** (Promises, async/await).
+*   ✅ Know core **Array iteration methods** (`map`, `filter`, `reduce`, `forEach`).
+*   ✅ Understand **DOM manipulation** and **event handling** (esp. delegation).
+*   ✅ Practice **debugging** (`console.log`, DevTools).
+*   ✅ **Read the question carefully!**
+*   ✅ **Test edge cases**.
+*   ✅ **Practice, practice, practice!**
+
+---
+
+**Good luck with your exam!**
